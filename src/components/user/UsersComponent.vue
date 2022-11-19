@@ -70,6 +70,7 @@
                 type="warning"
                 icon="el-icon-setting"
                 size="mini"
+                @click="setRoleDialogVisable(scope.row)"
               ></el-button>
             </el-tooltip>
           </template>
@@ -145,6 +146,32 @@
           <el-button type="primary" @click="editUsersInfo">确 定</el-button>
         </span>
       </el-dialog>
+      <!-- 分配权限的对话框 -->
+      <el-dialog
+        title="提示"
+        :visible.sync="setRightDialogVisable"
+        width="30%"
+        @close="setRoleDialogClose"
+      >
+        <div>
+          <p>用户名: {{ userInfo.username }}</p>
+          <p>用户角色: {{ userInfo.role_name }}</p>
+          <P
+            >用户权限：<el-select v-model="checkedRole" placeholder="请选择">
+              <el-option
+                v-for="item in rolesList"
+                :key="item.id"
+                :label="item.roleName"
+                :value="item.id"
+              >
+              </el-option> </el-select
+          ></P>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="setRightDialogVisable = false">取 消</el-button>
+          <el-button type="primary" @click="setRoleRight">确 定</el-button>
+        </span>
+      </el-dialog>
     </el-card>
   </div>
 </template>
@@ -163,6 +190,10 @@ export default {
       total: 0,
       addDialogVisible: false,
       editDialogVisible: false,
+      setRightDialogVisable: false,
+      userInfo: {},
+      rolesList: [],
+      checkedRole: '',
       addForm: {
         username: '',
         password: '',
@@ -340,6 +371,32 @@ export default {
             message: '已取消删除'
           })
         })
+    },
+    // 设置分配权限对话框的出现和隐藏
+    async setRoleDialogVisable(userInfo) {
+      this.userInfo = userInfo
+      const { data: res } = await this.$http.get('/roles')
+      this.rolesList = res.data
+      this.setRightDialogVisable = true
+    },
+    // 发送修改用户角色的请求并处理响应
+    async setRoleRight() {
+      const { data: res } = await this.$http.put(
+        `users/${this.userInfo.id}/role`,
+        {
+          rid: this.checkedRole
+        }
+      )
+      if (res.meta.status !== 200) {
+        return this.$message.error(res.meta.msg)
+      }
+      this.getUserList()
+      this.$message.success('修改成功')
+      this.setRightDialogVisable = false
+    },
+    setRoleDialogClose() {
+      this.checkedRole = ''
+      this.userInfo = ''
     }
   }
 }
