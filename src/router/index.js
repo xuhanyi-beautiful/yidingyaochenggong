@@ -6,6 +6,10 @@ import WelcomeComponent from '../components/WelcomeComponent.vue'
 import UsersComponent from '../components/user/UsersComponent.vue'
 import RightsP from '../components/power/RightsP.vue'
 import RolesP from '../components/power/RolesP.vue'
+import GoodsCate from '../components/goods/GoodsCate.vue'
+import ParamsP from '../components/goods/ParamsP.vue'
+import GoodsList from '../components/goods/GoodsList.vue'
+import AddGood from '../components/goods/AddGood.vue'
 
 Vue.use(VueRouter)
 
@@ -20,7 +24,12 @@ const routes = [
       { path: '/welcome', component: WelcomeComponent },
       { path: '/users', component: UsersComponent },
       { path: '/rights', component: RightsP },
-      { path: '/roles', component: RolesP }
+      { path: '/roles', component: RolesP },
+      { path: '/categories', component: GoodsCate },
+      { path: '/params', component: ParamsP },
+      { path: '/goods', component: GoodsList },
+      { path: '/goods/add', component: AddGood }
+
     ]
   }
 ]
